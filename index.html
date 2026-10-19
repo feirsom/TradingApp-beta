@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TickSync &mdash; Day trading for Windows</title>
+  <meta name="description" content="TickSync is a Windows desktop app for active day traders: real-time tick charts, candle charts with volume profile and footprint, Level 2 and Time &amp; Sales, DAS Trader hotkey integration and built-in discipline rules. Invitation-only beta.">
+  <meta name="theme-color" content="#101010">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="TickSync &mdash; Day trading for Windows">
+  <meta property="og:description" content="Fast, disciplined day trading for active traders on Windows. Invitation-only beta.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+  <style>
+    /* Palette. Every text/background pair used below is >= 4.5:1 (WCAG AA).
+       See SITE_NOTES.md for the measured ratios before changing any of these. */
+    :root {
+      --bg: #101010;
+      --panel: #191919;
+      --panel-2: #202020;
+      --chip: #242424;
+      --border: #2E2E2E;
+      --border-strong: #3A3A3A;
+      --text: #F5F5F5;          /* WhiteSmoke */
+      --muted: #B5B5B5;
+      --accent: #63B7D6;
+      --btn: #2B5A70;
+      --btn-hover: #336A84;
+      --btn-border: #3C7893;
+      --tint: #15232A;
+      --tint-strong: #12303D;
+      --maxw: 1120px;
+      --radius: 12px;
+      color-scheme: dark;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img, svg { display: block; max-width: 100%; }
+
+    h1, h2, h3 { line-height: 1.2; margin: 0; letter-spacing: -0.015em; }
+    p { margin: 0; }
+
+    a { color: var(--accent); text-underline-offset: 3px; }
+    a:hover { color: var(--text); }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    code {
+      font-family: "Cascadia Mono", Consolas, "SFMono-Regular", Menlo, monospace;
+      font-size: 0.92em;
+      background: var(--chip);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 0.1em 0.4em;
+      overflow-wrap: anywhere;
+    }
+
+    .container {
+      width: 100%;
+      max-width: calc(var(--maxw) + 48px);
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    @media (min-width: 720px) {
+      .container { padding: 0 24px; }
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -100px;
+      z-index: 100;
+      background: var(--btn);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .skip-link:focus { top: 12px; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 64px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.125rem;
+      letter-spacing: -0.01em;
+    }
+    .brand:hover { color: var(--text); }
+    .brand svg { width: 28px; height: 28px; flex: none; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a:not(.btn) {
+      display: inline-block;
+      padding: 8px 12px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border-radius: 8px;
+    }
+    .nav-links a:not(.btn):hover { color: var(--text); background: var(--panel); }
+    .nav-links .nav-cta { margin-left: 8px; }
+    @media (max-width: 819px) {
+      .nav-links li:not(.nav-cta) { display: none; }
+      .nav-links .nav-cta { margin-left: 0; }
+    }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.2;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .btn svg { width: 18px; height: 18px; flex: none; }
+    .btn-primary {
+      background: var(--btn);
+      border-color: var(--btn-border);
+      color: var(--text);
+    }
+    .btn-primary:hover { background: var(--btn-hover); color: var(--text); }
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--btn);
+      color: var(--accent);
+    }
+    .btn-ghost:hover { background: var(--panel); border-color: var(--btn-border); color: var(--accent); }
+    .btn-sm { min-height: 38px; padding: 8px 14px; font-size: 0.9375rem; }
+
+    /* ---------- Sections ---------- */
+    section { scroll-margin-top: 72px; }
+    .section { padding: 72px 0; }
+    .section + .section { border-top: 1px solid var(--border); }
+    @media (max-width: 719px) {
+      .section { padding: 52px 0; }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--accent);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-head { max-width: 680px; margin-bottom: 36px; }
+    .section-head h2 { font-size: clamp(1.75rem, 1.2rem + 2vw, 2.375rem); }
+    .section-head p { color: var(--muted); margin-top: 12px; font-size: 1.0625rem; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      padding: 80px 0 72px;
+      background:
+        radial-gradient(900px 480px at 85% 10%, rgba(99, 183, 214, 0.09), rgba(99, 183, 214, 0) 70%),
+        var(--bg);
+    }
+    .hero-grid {
+      display: grid;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero-grid > * { min-width: 0; }
+    @media (min-width: 940px) {
+      .hero-grid { grid-template-columns: 1fr 1.05fr; gap: 56px; }
+    }
+    @media (max-width: 719px) {
+      .hero { padding: 48px 0 52px; }
+      .hero-grid { gap: 40px; }
+    }
+    .hero h1 {
+      font-size: clamp(2.75rem, 1.6rem + 5vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .hero h1 .flow { color: var(--accent); }
+    .hero .lead {
+      margin-top: 16px;
+      font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.5rem);
+      line-height: 1.45;
+      font-weight: 500;
+      max-width: 30ch;
+    }
+    .hero .sub {
+      margin-top: 16px;
+      color: var(--muted);
+      max-width: 52ch;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .beta-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.9375rem;
+    }
+    .beta-note svg { width: 16px; height: 16px; flex: none; color: var(--accent); }
+
+    .hero-art {
+      border-radius: var(--radius);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+    .hero-art svg { width: 100%; height: auto; }
+
+    /* ---------- Features ---------- */
+    .card-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    @media (min-width: 600px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1000px) { .card-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color 0.15s ease;
+    }
+    .card:hover { border-color: var(--btn); }
+    .card h3 { font-size: 1.125rem; font-weight: 600; margin-top: 16px; }
+    .card p { color: var(--muted); margin-top: 8px; font-size: 0.9375rem; }
+
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--tint-strong);
+      color: var(--accent);
+    }
+    .icon svg { width: 22px; height: 22px; }
+
+    .discipline {
+      margin-top: 20px;
+      background: var(--tint);
+      border: 1px solid var(--btn);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: grid;
+      gap: 24px;
+    }
+    @media (min-width: 900px) {
+      .discipline { grid-template-columns: 0.8fr 2fr; gap: 40px; padding: 32px; }
+    }
+    .discipline h3 { font-size: 1.375rem; font-weight: 600; margin-top: 16px; }
+    .discipline .intro { color: var(--muted); margin-top: 8px; }
+    .rule-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .rule-list { grid-template-columns: repeat(2, 1fr); }
+      .rule-list li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    }
+    .rule-list li {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .rule-list strong { display: block; font-weight: 600; }
+    .rule-list span { display: block; color: var(--muted); font-size: 0.9375rem; margin-top: 2px; }
+
+    /* ---------- Screenshots ---------- */
+    .shots {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 760px) {
+      .shots { grid-template-columns: repeat(2, 1fr); }
+      .shot-wide { grid-column: 1 / -1; }
+    }
+    .shot {
+      margin: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .shot img { width: 100%; height: auto; background: var(--panel); }
+    .shot figcaption {
+      padding: 12px 16px;
+      color: var(--muted);
+      font-size: 0.9375rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ---------- Requirements ---------- */
+    .req-grid { display: grid; gap: 20px; }
+    @media (min-width: 900px) { .req-grid { grid-template-columns: 1.4fr 1fr; gap: 24px; } }
+    .req-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+    .req-list li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .req-list .check {
+      flex: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--tint-strong);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .req-list .check svg { width: 14px; height: 14px; }
+    .req-list strong { font-weight: 600; }
+    .req-list span { color: var(--muted); }
+
+    .callout {
+      background: var(--tint);
+      border: 1px solid var(--btn);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .callout h3 { font-size: 1.125rem; font-weight: 600; }
+    .callout p { color: var(--muted); margin-top: 10px; }
+    .callout p strong { color: var(--text); font-weight: 600; }
+
+    /* ---------- Install ---------- */
+    .steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 20px;
+      counter-reset: step;
+    }
+    @media (min-width: 760px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+    .steps > li {
+      counter-increment: step;
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 24px 24px 76px;
+    }
+    .steps > li::before {
+      content: counter(step);
+      position: absolute;
+      left: 24px;
+      top: 22px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--tint-strong);
+      border: 1px solid var(--btn);
+      color: var(--accent);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (max-width: 419px) {
+      .steps > li { padding: 72px 20px 20px; }
+      .steps > li::before { left: 20px; top: 20px; }
+    }
+    .steps h3 { font-size: 1.125rem; font-weight: 600; }
+    .steps p { color: var(--muted); margin-top: 8px; }
+    .smartscreen {
+      margin-top: 14px;
+      background: var(--tint);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 0.9375rem;
+    }
+    .smartscreen p { color: var(--text); margin: 0; }
+    .smartscreen p + p { margin-top: 6px; color: var(--muted); }
+    .ui-label {
+      display: inline-block;
+      background: var(--chip);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 0 6px;
+      color: var(--text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ---------- Beta access ---------- */
+    .beta-panel {
+      background:
+        radial-gradient(600px 300px at 50% 0%, rgba(99, 183, 214, 0.08), rgba(99, 183, 214, 0) 70%),
+        var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    @media (min-width: 720px) { .beta-panel { padding: 56px 48px; } }
+    .beta-panel h2 { font-size: clamp(1.75rem, 1.2rem + 2vw, 2.375rem); }
+    .beta-panel p { color: var(--muted); margin: 14px auto 0; max-width: 58ch; }
+    .beta-panel .contact {
+      display: inline-block;
+      margin-top: 24px;
+      background: var(--panel-2);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+    .beta-panel .hero-actions { justify-content: center; margin-top: 28px; }
+
+    /* ---------- Footer ---------- */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0 48px;
+      color: var(--muted);
+      font-size: 0.9375rem;
+    }
+    .site-footer .disclaimer { max-width: 80ch; }
+    .site-footer .disclaimer strong { color: var(--text); font-weight: 600; }
+    .footer-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px 24px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="#top" aria-label="TickSync home">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <rect width="64" height="64" rx="14" fill="#191919" stroke="#2E2E2E" stroke-width="2"/>
+          <polyline points="11,43 22,43 22,31 33,31 33,38 43,38 43,22 53,22" fill="none" stroke="#63B7D6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        TickSync
+      </a>
+      <nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#screenshots">Screenshots</a></li>
+          <li><a href="#requirements">Requirements</a></li>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#beta">Beta access</a></li>
+          <li class="nav-cta"><a class="btn btn-primary btn-sm" href="https://github.com/feirsom/TradingApp-beta/releases/latest">Download</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ================= Hero ================= -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Day-trading app for Windows</span>
+          <h1 id="hero-title">Tick<span class="flow">Sync</span></h1>
+          <p class="lead">Fast, disciplined day trading for active traders on Windows.</p>
+          <p class="sub">Tick and candle charts, Level&nbsp;2 and Time &amp; Sales, and DAS Trader hotkey execution in one desktop app &mdash; with built-in rules for when and how you trade.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/feirsom/TradingApp-beta/releases/latest">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+              Download the beta
+            </a>
+            <a class="btn btn-ghost" href="#beta">Request a beta key</a>
+          </div>
+          <p class="beta-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9"/><path d="M17 6l3 3"/><path d="M15 8l2 2"/></svg>
+            Invitation-only beta &ndash; the app needs a beta key.
+          </p>
+        </div>
+
+        <div class="hero-art">
+          <svg viewBox="0 0 610 340" role="img" aria-labelledby="art-title">
+            <title id="art-title">Illustration of a tick chart with an armed entry line, a hard stop and a take-profit line</title>
+            <rect x="0.5" y="0.5" width="609" height="339" rx="12" fill="#191919" stroke="#2E2E2E"/>
+            <g stroke="#232323" stroke-width="1">
+              <path d="M24 40H524M24 80H524M24 120H524M24 160H524M24 200H524M24 240H524M24 280H524"/>
+              <path d="M74 24V320M174 24V320M274 24V320M374 24V320M474 24V320"/>
+            </g>
+            <line x1="524.5" y1="20" x2="524.5" y2="324" stroke="#2E2E2E"/>
+            <g fill="#24404D">
+              <rect x="26" y="300" width="6" height="16"/><rect x="36" y="306" width="6" height="10"/><rect x="46" y="298" width="6" height="18"/><rect x="56" y="290" width="6" height="26"/><rect x="66" y="309" width="6" height="7"/><rect x="76" y="308" width="6" height="8"/><rect x="86" y="293" width="6" height="23"/><rect x="96" y="307" width="6" height="9"/><rect x="106" y="299" width="6" height="17"/><rect x="116" y="292" width="6" height="24"/><rect x="126" y="309" width="6" height="7"/><rect x="136" y="294" width="6" height="22"/><rect x="146" y="304" width="6" height="12"/><rect x="156" y="309" width="6" height="7"/><rect x="166" y="308" width="6" height="8"/><rect x="176" y="297" width="6" height="19"/><rect x="186" y="297" width="6" height="19"/><rect x="196" y="308" width="6" height="8"/><rect x="206" y="303" width="6" height="13"/><rect x="216" y="308" width="6" height="8"/><rect x="226" y="293" width="6" height="23"/><rect x="236" y="297" width="6" height="19"/><rect x="246" y="309" width="6" height="7"/><rect x="256" y="292" width="6" height="24"/><rect x="266" y="307" width="6" height="9"/><rect x="276" y="303" width="6" height="13"/><rect x="286" y="290" width="6" height="26"/><rect x="296" y="290" width="6" height="26"/><rect x="306" y="292" width="6" height="24"/><rect x="316" y="309" width="6" height="7"/><rect x="326" y="292" width="6" height="24"/><rect x="336" y="292" width="6" height="24"/><rect x="346" y="298" width="6" height="18"/><rect x="356" y="309" width="6" height="7"/><rect x="366" y="303" width="6" height="13"/><rect x="376" y="309" width="6" height="7"/><rect x="386" y="293" width="6" height="23"/><rect x="396" y="306" width="6" height="10"/><rect x="406" y="301" width="6" height="15"/><rect x="416" y="297" width="6" height="19"/><rect x="426" y="306" width="6" height="10"/><rect x="436" y="293" width="6" height="23"/><rect x="446" y="307" width="6" height="9"/><rect x="456" y="292" width="6" height="24"/><rect x="466" y="301" width="6" height="15"/><rect x="476" y="293" width="6" height="23"/><rect x="486" y="289" width="6" height="27"/><rect x="496" y="305" width="6" height="11"/><rect x="506" y="307" width="6" height="9"/><rect x="516" y="292" width="6" height="24"/>
+            </g>
+            <!-- take-profit / entry / stop lines -->
+            <line x1="24" y1="80" x2="524" y2="80" stroke="#6CC48A" stroke-width="2"/>
+            <line x1="24" y1="160" x2="524" y2="160" stroke="#63B7D6" stroke-width="2" stroke-dasharray="8 6"/>
+            <line x1="24" y1="250" x2="524" y2="250" stroke="#E57373" stroke-width="2"/>
+            <!-- tick line -->
+            <polyline fill="none" stroke="#D9D9D9" stroke-width="2" stroke-linejoin="round" points="24,222 34,222 34,220 44,220 44,224 54,224 54,226 64,226 64,221 74,221 74,218 84,218 84,219 94,219 94,214 104,214 104,216 114,216 114,212 124,212 124,209 134,209 134,213 144,213 144,217 154,217 154,215 164,215 164,220 174,220 174,224 184,224 184,222 194,222 194,218 204,218 204,213 214,213 214,208 224,208 224,204 234,204 234,206 244,206 244,201 254,201 254,198 264,198 264,202 274,202 274,205 284,205 284,200 294,200 294,196 304,196 304,193 314,193 314,197 324,197 324,195 334,195 334,190 344,190 344,186 354,186 354,189 364,189 364,192 374,192 374,188 384,188 384,184 394,184 394,181 404,181 404,185 414,185 414,183 424,183 424,179 434,179 434,176 444,176 444,180 454,180 454,177 464,177 464,173 474,173 474,175 484,175 484,171 494,171 494,169 504,169 504,172 514,172 514,168 524,168"/>
+            <circle cx="524" cy="168" r="4" fill="#F5F5F5"/>
+            <!-- right-axis tags: dark text on light fills (6.4:1 to 9.0:1) -->
+            <g font-family="Inter, Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#101010">
+              <rect x="536" y="69" width="62" height="22" rx="4" fill="#6CC48A"/>
+              <text x="567" y="84.5">TP</text>
+              <rect x="536" y="149" width="62" height="22" rx="4" fill="#63B7D6"/>
+              <text x="567" y="164.5">ENTRY</text>
+              <rect x="536" y="239" width="62" height="22" rx="4" fill="#E57373"/>
+              <text x="567" y="254.5">STOP</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Features ================= -->
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Features</span>
+          <h2 id="features-title">Charts, depth, execution and discipline in one app</h2>
+          <p>TickSync runs on your Windows desktop alongside DAS Trader Pro, using your own IQFeed market data.</p>
+        </div>
+
+        <ul class="card-grid">
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="3,17 7,17 7,12 11,12 11,15 15,15 15,8 21,8"/></svg></span>
+            <h3>Real-time tick charts</h3>
+            <p>Tick-by-tick price charts that update live from the IQFeed Level&nbsp;1 feed.</p>
+          </li>
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 4v16M12 7v12M18 3v15"/><rect x="4" y="8" width="4" height="7" rx="1"/><rect x="10" y="10" width="4" height="5" rx="1"/><rect x="16" y="6" width="4" height="8" rx="1"/></svg></span>
+            <h3>Candle charts, seconds to daily</h3>
+            <p>Timeframes from seconds up to daily, with VWAP, EMAs and an RVOL (relative volume) row.</p>
+          </li>
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 3v18"/><path d="M4 6h7M4 10h12M4 14h16M4 18h9"/></svg></span>
+            <h3>Volume profile</h3>
+            <p>Session POC, VAH and VAL, prior-day levels, and a rolling value area over the last N bars.</p>
+          </li>
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M4 9h16M4 15h16"/></svg></span>
+            <h3>Footprint and delta</h3>
+            <p>Volume traded at the bid and ask inside each candle, shown as net delta or bid &times; ask.</p>
+          </li>
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5h6M14 5h6M4 10h4M14 10h5M4 15h7M14 15h3M4 20h5M14 20h6"/></svg></span>
+            <h3>Level&nbsp;2 and Time &amp; Sales</h3>
+            <p>Market depth and the tape side by side, from IQFeed Nasdaq Level&nbsp;II data.</p>
+          </li>
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h6M7 13h10M7 16h7"/></svg></span>
+            <h3>News, earnings and halts</h3>
+            <p>Badges on the chart for news headlines, earnings dates and trading halts on the symbol you are watching.</p>
+          </li>
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg></span>
+            <h3>DAS Trader hotkey integration</h3>
+            <p>Sends orders through DAS Trader Pro hotkeys behind safety interlocks, including cancel-first exits and exit protection.</p>
+          </li>
+          <li class="card">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h18M3 18h18"/><path d="M3 12h18" stroke-dasharray="3 3"/></svg></span>
+            <h3>Trade lines on the chart</h3>
+            <p>Armed entry lines, hard stops and take-profit lines, drawn directly on the chart.</p>
+          </li>
+        </ul>
+
+        <div class="discipline">
+          <div>
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+            <h3>Rules and discipline tools</h3>
+            <p class="intro">Rules you set ahead of the session, checked by the app as you trade.</p>
+          </div>
+          <ul class="rule-list">
+            <li><strong>Trading windows</strong><span>Define the times of day you trade, with a guard for entries outside them.</span></li>
+            <li><strong>No averaging down</strong><span>A guard against adding to a losing position.</span></li>
+            <li><strong>Post-loss cooldown</strong><span>A pause on new entries after a losing trade.</span></li>
+            <li><strong>Minimum risk per share</strong><span>A minimum distance between entry and stop for new trades.</span></li>
+            <li><strong>Pre-trade questionnaire</strong><span>A short checklist to answer before entries are enabled for a trading window.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Screenshots =================
+         Replace assets/screenshot-1.png .. screenshot-3.png with real captures
+         (1600 x 1000 recommended, or keep a 16:10 ratio). Update the captions
+         and alt text below to match. -->
+    <section class="section" id="screenshots" aria-labelledby="screenshots-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Screenshots</span>
+          <h2 id="screenshots-title">A look at the app</h2>
+        </div>
+        <div class="shots">
+          <figure class="shot shot-wide">
+            <img src="assets/screenshot-1.png" width="1600" height="1000" loading="lazy" decoding="async" alt="TickSync main window (screenshot placeholder)">
+            <figcaption>Tick chart with trade lines</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshot-2.png" width="1600" height="1000" loading="lazy" decoding="async" alt="TickSync candle chart (screenshot placeholder)">
+            <figcaption>Candle chart with volume profile</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshot-3.png" width="1600" height="1000" loading="lazy" decoding="async" alt="TickSync Level 2 and Time &amp; Sales (screenshot placeholder)">
+            <figcaption>Level 2 and Time &amp; Sales</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Requirements ================= -->
+    <section class="section" id="requirements" aria-labelledby="requirements-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Requirements</span>
+          <h2 id="requirements-title">What you need</h2>
+        </div>
+        <div class="req-grid">
+          <ul class="req-list">
+            <li>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12l4 4 10-10"/></svg></span>
+              <div><strong>Windows 10 or 11 (64-bit)</strong></div>
+            </li>
+            <li>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12l4 4 10-10"/></svg></span>
+              <div><strong>Your own DTN IQFeed subscription</strong> <span>&mdash; for market data. Level&nbsp;2 is optional.</span></div>
+            </li>
+            <li>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12l4 4 10-10"/></svg></span>
+              <div><strong>DAS Trader Pro</strong> <span>&mdash; for order entry.</span></div>
+            </li>
+            <li>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12l4 4 10-10"/></svg></span>
+              <div><strong>A beta key from the developer</strong> <span>&mdash; see <a href="#beta">Beta access</a>.</span></div>
+            </li>
+            <!-- OWNER: no .NET runtime line is needed while releases are built
+                 self-contained (as Tools/Publish-Beta.ps1 does). If a release is
+                 ever framework-dependent, add ".NET 8 Desktop Runtime (x64)" here. -->
+          </ul>
+          <aside class="callout" aria-labelledby="accounts-title">
+            <h3 id="accounts-title">Your accounts, your data</h3>
+            <p>TickSync connects to <strong>your own</strong> IQFeed and DAS Trader accounts. It does not provide market data or brokerage services; those subscriptions are with DTN and your broker.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Install ================= -->
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Install</span>
+          <h2 id="install-title">Install in 4 steps</h2>
+        </div>
+        <ol class="steps">
+          <li>
+            <h3>Download</h3>
+            <p>Download the zip from the <a href="https://github.com/feirsom/TradingApp-beta/releases/latest">latest release</a>.</p>
+          </li>
+          <li>
+            <h3>Extract</h3>
+            <p>Extract the zip to a folder (right-click it, then <strong>Extract All</strong>).</p>
+          </li>
+          <li>
+            <h3>Run <code>TradingApp.exe</code></h3>
+            <p>Open the extracted folder and run <code>TradingApp.exe</code>.</p>
+            <div class="smartscreen">
+              <p>If Windows SmartScreen says &ldquo;Windows protected your PC&rdquo;, click <span class="ui-label">More info</span> then <span class="ui-label">Run anyway</span>.</p>
+              <p>This appears because the beta is not code-signed yet.</p>
+            </div>
+          </li>
+          <li>
+            <h3>Enter your beta key</h3>
+            <p>Paste your beta key when the app asks for it.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================= Beta access ================= -->
+    <section class="section" id="beta" aria-labelledby="beta-title">
+      <div class="container">
+        <div class="beta-panel">
+          <span class="eyebrow">Beta access</span>
+          <h2 id="beta-title">Request a beta key</h2>
+          <p>TickSync is in an invitation-only beta. Beta keys are issued by the developer. Get in touch to request one.</p>
+          <p class="contact">Email <a href="mailto:ticksync.app@gmail.com?subject=TickSync%20beta%20key%20request">ticksync.app@gmail.com</a> to request a key.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/feirsom/TradingApp-beta/releases/latest">Download the beta</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="disclaimer"><strong>Risk disclaimer.</strong> Trading involves risk, including the possible loss of capital. TickSync is beta software provided as-is, without warranty of any kind. Nothing on this site or in the app is investment advice.</p>
+      <div class="footer-meta">
+        <p>Not affiliated with DTN/IQFeed or DAS Trader. All trademarks belong to their respective owners.</p>
+        <p>&copy; 2026 TickSync</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

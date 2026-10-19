@@ -32,7 +32,10 @@ provide market data or brokerage services.
 ## Beta key
 
 TickSync is in an invitation-only beta, and the app needs a beta key. Keys are
-issued by the developer and arrive with your invitation email.
+issued by the developer and arrive with your invitation email. To request one,
+email [ticksync.app@gmail.com](mailto:ticksync.app@gmail.com).
+
+Website: [ticksync.app](https://ticksync.app)
 
 ## Disclaimer
 
