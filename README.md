@@ -25,7 +25,7 @@ provide market data or brokerage services.
 
 1. Download the zip from the [latest release](https://github.com/feirsom/TradingApp-beta/releases/latest).
 2. Extract it to a folder.
-3. Run `TradingApp.exe`. Windows SmartScreen may say "Windows protected your PC"
+3. Run `TickSync.exe`. Windows SmartScreen may say "Windows protected your PC"
    because the beta is not code-signed. Click **More info**, then **Run anyway**.
 4. Paste your beta key when asked.
 
