@@ -1,6 +1,6 @@
-# TickFlow (beta)
+# TickSync (beta)
 
-TickFlow is a Windows desktop app for active day traders. It combines real-time
+TickSync is a Windows desktop app for active day traders. It combines real-time
 tick charts, candle charts (VWAP, EMAs, volume profile, footprint/delta, RVOL),
 Level 2 and Time & Sales from IQFeed, DAS Trader Pro hotkey integration with
 safety interlocks, trade lines on the chart, and built-in discipline rules.
@@ -18,7 +18,7 @@ safety interlocks, trade lines on the chart, and built-in discipline rules.
 - DAS Trader Pro for order entry
 - A beta key from the developer
 
-TickFlow connects to your own IQFeed and DAS Trader accounts. It does not
+TickSync connects to your own IQFeed and DAS Trader accounts. It does not
 provide market data or brokerage services.
 
 ## Install
@@ -31,13 +31,13 @@ provide market data or brokerage services.
 
 ## Beta key
 
-TickFlow is in an invitation-only beta, and the app needs a beta key. Keys are
+TickSync is in an invitation-only beta, and the app needs a beta key. Keys are
 issued by the developer and arrive with your invitation email.
 
 ## Disclaimer
 
-Trading involves risk, including the possible loss of capital. TickFlow is beta
+Trading involves risk, including the possible loss of capital. TickSync is beta
 software provided as-is, without warranty of any kind. Nothing here is
 investment advice. Not affiliated with DTN/IQFeed or DAS Trader.
 
-© 2026 TickFlow
+© 2026 TickSync
