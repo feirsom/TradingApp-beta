@@ -43,6 +43,11 @@ TickSync is in an invitation-only beta, and the app needs a beta key. Keys are
 issued by the developer and arrive with your invitation email. To request one,
 email [hello@ticksync.app](mailto:hello@ticksync.app).
 
+## Feedback
+
+Send feature requests, changes and bug reports from the app (**Menu → Send Feedback...**), or
+with the [feedback form](https://docs.google.com/forms/d/e/1FAIpQLScuv4PbIlL9dnwybhs4-Zd53YcjyRG9sggGZZ62tjjqsEh_6g/viewform).
+
 Website: [ticksync.app](https://ticksync.app)
 
 ## Disclaimer
