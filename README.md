@@ -24,7 +24,7 @@ the sessions TickSync records.
   session data and deletes older days)
 - DAS Trader Pro (optional). The charts, the scanner and the Analyzer work with any broker, or
   none; numpad hotkeys and symbol sync need DAS. During the beta, automatic exits and entry lines
-  run in Audit and send nothing.
+  are Off to start; set one to Audit to see what it would send (it sends nothing).
 - A beta key from the developer
 
 TickSync connects to your own IQFeed and DAS Trader accounts. It does not
