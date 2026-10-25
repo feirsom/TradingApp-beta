@@ -42,7 +42,8 @@ provide market data or brokerage services.
 4. Paste your beta key when asked. The same key works in TickSync Scanner and TickSync
    Analyzer, which are in the Start menu and open from TickSync's Menu.
 
-To update, run the newest `TickSync-Setup.exe`; it keeps your settings. To uninstall: Windows
+Everything of yours is in `Documents\TickSync`: shortcuts to the three programs, your Recorded
+Sessions, Trade Journal and Scanner Lists. To update, run the newest `TickSync-Setup.exe`; it keeps your settings. To uninstall: Windows
 Settings → Apps → Installed apps → TickSync → Uninstall (your settings and recorded sessions stay).
 
 ## Beta key
