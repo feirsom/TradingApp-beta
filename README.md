@@ -18,8 +18,8 @@ the sessions TickSync records.
 ## Requirements
 
 - Windows 10 or 11 (64-bit)
-- Your own DTN IQFeed subscription (market data; Level 2 optional). Start IQFeed and log
-  in before opening TickSync. The scanner and TickSync's charts share your IQFeed symbol limit.
+- Your own DTN IQFeed subscription (market data; Level 2 optional). Open one of DTN's IQFeed programs,
+  such as IQCharts, and log in before opening TickSync; TickSync can't start IQFeed by itself. The scanner and TickSync's charts share your IQFeed symbol limit.
 - About 20 GB of free disk space (TickSync keeps the last 5 trading days of recorded
   session data and deletes older days)
 - DAS Trader Pro (optional). The charts, the scanner and the Analyzer work with any broker, or
@@ -38,7 +38,8 @@ provide market data or brokerage services.
    only (no administrator password) and asks which programs get a desktop shortcut and, on an
    up-to-date Windows 11, which to pin to the taskbar (Windows asks you to confirm the first time
    each pinned program opens).
-3. Start IQFeed and log in, then open TickSync from the Start menu or your desktop.
+3. Open IQCharts (or another IQFeed program) and log in, so IQFeed is connected, then open TickSync
+   from the Start menu or your desktop.
 4. Paste your beta key when asked. The same key works in TickSync Scanner and TickSync
    Analyzer, which are in the Start menu and open from TickSync's Menu.
 
