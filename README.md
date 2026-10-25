@@ -13,7 +13,7 @@ the sessions TickSync records.
 
 ## Download
 
-**[Download the latest release](https://github.com/feirsom/TradingApp-beta/releases/latest)**
+**[Download TickSync-Setup.exe](https://github.com/feirsom/TradingApp-beta/releases/latest/download/TickSync-Setup.exe)** (the latest beta; each [release](https://github.com/feirsom/TradingApp-beta/releases/latest) also has a zip)
 
 ## Requirements
 
@@ -32,12 +32,18 @@ provide market data or brokerage services.
 
 ## Install
 
-1. Download the zip from the [latest release](https://github.com/feirsom/TradingApp-beta/releases/latest).
-2. Extract it to a folder.
-3. Run `TickSync.exe`. Windows SmartScreen may say "Windows protected your PC"
-   because the beta is not code-signed. Click **More info**, then **Run anyway**.
+1. Download [`TickSync-Setup.exe`](https://github.com/feirsom/TradingApp-beta/releases/latest/download/TickSync-Setup.exe).
+2. Run it. Windows SmartScreen may say "Windows protected your PC" because the beta is not
+   code-signed: click **More info**, then **Run anyway**. It installs for your Windows account
+   only (no administrator password) and asks which programs get a desktop shortcut and, on an
+   up-to-date Windows 11, which to pin to the taskbar (Windows asks you to confirm the first time
+   each pinned program opens).
+3. Start IQFeed and log in, then open TickSync from the Start menu or your desktop.
 4. Paste your beta key when asked. The same key works in TickSync Scanner and TickSync
-   Analyzer, which are in the same folder and open from TickSync's Menu.
+   Analyzer, which are in the Start menu and open from TickSync's Menu.
+
+To update, run the newest `TickSync-Setup.exe`; it keeps your settings. To uninstall: Windows
+Settings → Apps → Installed apps → TickSync → Uninstall (your settings and recorded sessions stay).
 
 ## Beta key
 

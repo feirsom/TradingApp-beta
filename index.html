@@ -461,6 +461,13 @@
     }
     .smartscreen p { color: var(--text); margin: 0; }
     .smartscreen p + p { margin-top: 6px; color: var(--muted); }
+    .install-notes {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.9375rem;
+      max-width: 80ch;
+    }
+    .install-notes strong { color: var(--text); font-weight: 600; }
     .ui-label {
       display: inline-block;
       background: var(--chip);
@@ -543,7 +550,7 @@
           <li><a href="#requirements">Requirements</a></li>
           <li><a href="#install">Install</a></li>
           <li><a href="#beta">Beta access</a></li>
-          <li class="nav-cta"><a class="btn btn-primary btn-sm" href="https://github.com/feirsom/TradingApp-beta/releases/latest">Download</a></li>
+          <li class="nav-cta"><a class="btn btn-primary btn-sm" href="https://github.com/feirsom/TradingApp-beta/releases/latest/download/TickSync-Setup.exe">Download</a></li>
         </ul>
       </nav>
     </div>
@@ -559,7 +566,7 @@
           <p class="lead">Fast, disciplined day trading for active traders on Windows.</p>
           <p class="sub">Tick and candle charts, Level&nbsp;2 and Time &amp; Sales, and DAS Trader hotkey execution in one desktop app &mdash; with built-in rules for when and how you trade.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="https://github.com/feirsom/TradingApp-beta/releases/latest">
+            <a class="btn btn-primary" href="https://github.com/feirsom/TradingApp-beta/releases/latest/download/TickSync-Setup.exe">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
               Download the beta
             </a>
@@ -757,22 +764,23 @@
         <div class="section-head">
           <span class="eyebrow">Install</span>
           <h2 id="install-title">Install in 4 steps</h2>
+          <p>TickSync installs like any Windows program, for your Windows account only, with no administrator password.</p>
         </div>
         <ol class="steps">
           <li>
             <h3>Download</h3>
-            <p>Download the zip from the <a href="https://github.com/feirsom/TradingApp-beta/releases/latest">latest release</a>.</p>
+            <p>Download <a href="https://github.com/feirsom/TradingApp-beta/releases/latest/download/TickSync-Setup.exe"><code>TickSync-Setup.exe</code></a>. If your browser says the file isn&rsquo;t commonly downloaded, choose <span class="ui-label">Keep</span>.</p>
           </li>
           <li>
-            <h3>Extract</h3>
-            <p>Extract the zip to a folder (right-click it, then <strong>Extract All</strong>).</p>
+            <h3>Run the installer</h3>
+            <p>Open <code>TickSync-Setup.exe</code> and follow its steps. It asks which programs get a desktop shortcut and, on an up-to-date Windows 11, which to pin to the taskbar; TickSync, TickSync Scanner and TickSync Analyzer are in the Start menu either way.</p>
           </li>
           <li>
-            <h3>Run <code>TickSync.exe</code></h3>
-            <p>Open the extracted folder and run <code>TickSync.exe</code>. TickSync Scanner and TickSync Analyzer are in the same folder: open them from TickSync&rsquo;s <span class="ui-label">Menu</span>, or run them directly.</p>
+            <h3>Open TickSync</h3>
+            <p>Start IQFeed and log in, then open TickSync from the Start menu or your desktop. TickSync Scanner and TickSync Analyzer open from TickSync&rsquo;s <span class="ui-label">Menu</span>. If you chose to pin them, Windows asks you to confirm the first time each one opens.</p>
             <div class="smartscreen">
               <p>If Windows SmartScreen says &ldquo;Windows protected your PC&rdquo;, click <span class="ui-label">More info</span> then <span class="ui-label">Run anyway</span>.</p>
-              <p>This appears because the beta is not code-signed yet.</p>
+              <p>This appears for the installer because the beta is not code-signed yet.</p>
             </div>
           </li>
           <li>
@@ -780,6 +788,7 @@
             <p>Paste your beta key when the app asks for it.</p>
           </li>
         </ol>
+        <p class="install-notes"><strong>Updating:</strong> run the newest <code>TickSync-Setup.exe</code>; it replaces the old version and keeps your settings. <strong>Uninstalling:</strong> Windows Settings &rarr; Apps &rarr; Installed apps &rarr; TickSync &rarr; Uninstall; your settings and recorded sessions stay in your user folders. Prefer a zip? Each <a href="https://github.com/feirsom/TradingApp-beta/releases/latest">release</a> has one too.</p>
       </div>
     </section>
 
@@ -793,7 +802,7 @@
           <p class="contact">Email <a href="mailto:hello@ticksync.app?subject=TickSync%20beta%20key%20request">hello@ticksync.app</a> to request a key.</p>
           <p>Already testing? Send feature requests, changes and bug reports from the app (<span class="ui-label">Menu</span> &rarr; <span class="ui-label">Send Feedback...</span>), or with the <a href="https://docs.google.com/forms/d/e/1FAIpQLScuv4PbIlL9dnwybhs4-Zd53YcjyRG9sggGZZ62tjjqsEh_6g/viewform">feedback form</a>.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="https://github.com/feirsom/TradingApp-beta/releases/latest">Download the beta</a>
+            <a class="btn btn-primary" href="https://github.com/feirsom/TradingApp-beta/releases/latest/download/TickSync-Setup.exe">Download the beta</a>
           </div>
         </div>
       </div>
